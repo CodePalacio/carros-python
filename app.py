@@ -44,10 +44,10 @@ class Locadora:
             print(f"\nDesculpe, o carro: {carro} já não está mais disponivel")
 
     def lista_carros_disponiveis(self):
-        print("======================================\nCarros disponiveis:\n")
-        for carro in self.carros_disponiveis:
-            print("{}".format(carro))
-        print("======================================\n")
+        self.c.execute("SELECT nome FROM carros WHERE disponivel = 1")
+        carros = self.c.fetchall()
+        for carro in carros:
+            print(carro[0])
     
     def lista_carros_alugados(self):
         print("=====================================\nCarros alugados:\n")
@@ -66,5 +66,5 @@ def menu():
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
-    civic = Carro("civic")
-    locadora.adiciona_carro(civic)
+    locadora.lista_carros_disponiveis()
+
