@@ -1,14 +1,27 @@
+import sqlite3
+import os
+
 from carros import Carro
 
-import os
 os.system("cls")
 
 class Locadora:
-    def __init__(self) -> None:
-        self.carros_disponiveis = []
-        self.carros_alugados = {}
+    def __init__(self, nome_banco) -> None:
+        self.conn = sqlite3.connect(nome_banco)
+        self.c = self.conn.cursor()
+        self._criar_tabela()
+
     def __str__(self) -> str:
         return "{}".format(self.carros_disponiveis)
+    
+    def _criar_tabela(self):
+        self.c.execute('''CREATE TABLE IF NOT EXISTS carros (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       nome TEXT NOT NULL,
+                       disponivel INTEGER NOT NULL
+                        )
+                       ''')
+        self.conn.commit()
 
     def adiciona_carro(self, carro):
         self.carros_disponiveis.append(carro)
@@ -41,3 +54,6 @@ def menu():
     print("3. Devolver carro")
     print("4. Adicionar novo carro")
     print("5. Sair")
+
+if __name__ == "__main__":
+    locadora = Locadora("locadora.db")
