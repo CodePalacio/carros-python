@@ -1,4 +1,7 @@
-import carros
+from carros import Carro
+
+import os
+os.system("cls")
 
 class Locadora:
     def __init__(self) -> None:
@@ -31,12 +34,10 @@ class Locadora:
         print("=====================================\n")
 
 
-locadora = Locadora()
-locadora.adiciona_carro(carros.civic)
-locadora.adiciona_carro(carros.mobi)
-locadora.lista_carros_disponiveis()
-
-locadora.aluga_carro("Guilherme",carros.civic)
-locadora.aluga_carro("Alexandre",carros.mobi)
-
-locadora.lista_carros_alugados()
+def menu():
+    print("\n=====MENU=====")
+    print("1. Listar carros disponiveis")
+    print("2. Alugar carro")
+    print("3. Devolver carro")
+    print("4. Adicionar novo carro")
+    print("5. Sair")
