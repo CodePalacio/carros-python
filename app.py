@@ -1,9 +1,13 @@
 import sqlite3
 import os
 
-from carros import Carro
 
 os.system("cls")
+
+class Carro:
+    def __init__(self, nome, disponivel=True):
+        self.nome = nome
+        self.disponivel = disponivel
 
 class Locadora:
     def __init__(self, nome_banco) -> None:
@@ -24,7 +28,12 @@ class Locadora:
         self.conn.commit()
 
     def adiciona_carro(self, carro):
-        self.carros_disponiveis.append(carro)
+        try:
+            self.c.execute("INSERT INTO carros (nome, disponivel) VALUES(?,?)", (carro.nome, carro.disponivel))
+            self.conn.commit()
+            print(f"{carro.nome} adicionado com sucesso!")
+        except sqlite3.Error as e:
+            print(f"Erro ao adicionar {carro.nome}: {e}")
 
     def aluga_carro(self, cliente, carro):
         if carro in self.carros_disponiveis:
@@ -57,3 +66,5 @@ def menu():
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
+    civic = Carro("civic")
+    locadora.adiciona_carro(civic)
