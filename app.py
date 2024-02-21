@@ -44,13 +44,19 @@ class Locadora:
         except sqlite3.Error as e:
             print(f"Erro ao adicionar {carro.nome}: {e}")
 
-    def aluga_carro(self, cliente, carro):
-        if carro in self.carros_disponiveis:
-            self.carros_disponiveis.remove(carro)
-            self.carros_alugados[carro] = cliente
-            print(f"\nO carro: {carro.modelo} foi alugado para o cliente: {cliente}\n")
-        else:
-            print(f"\nDesculpe, o carro: {carro} já não está mais disponivel")
+    def aluga_carro(self, cliente, id):
+        try:
+            self.c.execute("SELECT nome FROM carros WHERE id = ? AND disponivel = 1", (id,))
+            resultado = self.c.fetchone()
+            if resultado: 
+                self.c.execute("UPDATE carros SET disponivel = 0 WHERE id = ?", (id,))
+                self.c.execute("INSERT INTO carros_alugados (carro_id, cliente) VALUES(?,?)", (id, cliente))
+                self.conn.commit()
+                print(f"O carro {resultado[0]} foi alugado para o cliente: {cliente}.")
+            else:
+                print(f"O carro: {resultado[0]}, não está mais disponivel para alugar.")
+        except sqlite3.Error as e:
+            print(f"Erro ao tentar alugar o carro : {e}")
 
     def lista_carros_disponiveis(self):
         self.c.execute("SELECT nome FROM carros WHERE disponivel = 1")
@@ -75,5 +81,6 @@ def menu():
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
-
+    locadora.aluga_carro("Pedro", 6)
+ 
 
