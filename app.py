@@ -1,9 +1,6 @@
 import sqlite3
 import os
 
-
-os.system("cls")
-
 class Carro:
     def __init__(self, nome, disponivel=True):
         self.nome = nome
@@ -61,27 +58,58 @@ class Locadora:
     def lista_carros_disponiveis(self):
         self.c.execute("SELECT nome FROM carros WHERE disponivel = 1")
         carros = self.c.fetchall()
+        print("\nCarros disponiveis: ")
         for carro in carros:
             print(carro[0])
     
     def lista_carros_alugados(self):
         self.c.execute("SELECT carros.nome, carros_alugados.cliente FROM carros_alugados JOIN carros ON carros.id = carros_alugados.carro_id")
         alugados = self.c.fetchall()
-        print("Carros alugados:")
+        print("\nCarros alugados:")
         for alugado in alugados:
             print(f"Carro: {alugado[0]}, Cliente: {alugado[1]}")
 
 
 def menu():
-    print("\n=====MENU=====")
+    
+    print("\n========= MENU =========")
     print("1. Listar carros disponiveis")
-    print("2. Alugar carro")
-    print("3. Devolver carro")
-    print("4. Adicionar novo carro")
-    print("5. Sair")
+    print("2. Listar carros alugados")
+    print("3. Alugar carro")
+    print("4. Devolver carro")
+    print("5. Adicionar novo carro")
+    print("6. Sair")
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
-    locadora.lista_carros_alugados()
- 
+    os.system("cls")
+
+    while True:
+        
+        menu()
+        opcao = input("\n Escolha uma opção: ")
+
+        if opcao == "1":
+            os.system("cls")
+            locadora.lista_carros_disponiveis()
+        elif opcao == "2":
+            os.system("cls")
+            locadora.lista_carros_alugados()
+        elif opcao == "3":
+            os.system("cls")
+            cliente = input("Digite seu nome: ")
+            carro_id = input("Digite o id do carro desejado: ")
+            locadora.aluga_carro(cliente, carro_id)
+        elif opcao == "4":
+            pass
+        elif opcao == "5":
+            os.system("cls")
+            novo_carro_nome = input("Digite o nome do carro que deseja cadastrar: ")
+            novo_carro = Carro(novo_carro_nome)
+            locadora.adiciona_carro(novo_carro)
+        elif opcao == "6":
+            print("\nSaindo...")
+            break
+        else:
+            print("Insira uma opção válida")
 
