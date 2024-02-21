@@ -13,18 +13,27 @@ class Locadora:
     def __init__(self, nome_banco) -> None:
         self.conn = sqlite3.connect(nome_banco)
         self.c = self.conn.cursor()
-        self._criar_tabela()
+        self._criar_tabela_carros()
+        self._criar_tabela_carros_alugados()
 
     def __str__(self) -> str:
         return "{}".format(self.carros_disponiveis)
     
-    def _criar_tabela(self):
+    def _criar_tabela_carros(self):
         self.c.execute('''CREATE TABLE IF NOT EXISTS carros (
                        id INTEGER PRIMARY KEY AUTOINCREMENT,
                        nome TEXT NOT NULL,
                        disponivel INTEGER NOT NULL
-                        )
-                       ''')
+        )''')
+        self.conn.commit()
+
+    def _criar_tabela_carros_alugados(self):
+        self.c.execute('''CREATE TABLE IF NOT EXISTS carros_alugados (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       carro_id INTEGER NOT NULL,
+                       cliente TEXT NOT NULL,
+                       FOREIGN KEY(carro_id) REFERENCES carros(id)
+        )''')
         self.conn.commit()
 
     def adiciona_carro(self, carro):
@@ -66,5 +75,5 @@ def menu():
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
-    locadora.lista_carros_disponiveis()
+
 
