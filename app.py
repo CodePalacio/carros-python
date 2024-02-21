@@ -65,10 +65,11 @@ class Locadora:
             print(carro[0])
     
     def lista_carros_alugados(self):
-        print("=====================================\nCarros alugados:\n")
-        for carro, cliente in self.carros_alugados.items():
-            print(f"Carro: {carro.modelo} / Cliente: {cliente}")
-        print("=====================================\n")
+        self.c.execute("SELECT carros.nome, carros_alugados.cliente FROM carros_alugados JOIN carros ON carros.id = carros_alugados.carro_id")
+        alugados = self.c.fetchall()
+        print("Carros alugados:")
+        for alugado in alugados:
+            print(f"Carro: {alugado[0]}, Cliente: {alugado[1]}")
 
 
 def menu():
@@ -81,6 +82,6 @@ def menu():
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
-    locadora.aluga_carro("Pedro", 6)
+    locadora.lista_carros_alugados()
  
 
