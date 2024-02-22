@@ -69,6 +69,14 @@ class Locadora:
         for alugado in alugados:
             print(f"Carro: {alugado[0]}, Cliente: {alugado[1]}")
 
+    def deletar_carro(self,carro_id):
+        try:
+            self.c.execute("DELETE FROM carros WHERE id = ?", (carro_id))
+            self.conn.commit()
+            print(f"Carro id: {carro_id} excluido com sucesso!")
+        except sqlite3.Error as e:
+            print(f"Erro ao excluir carro id: {carro_id} : {e}")
+
 
 def menu():
     
@@ -76,9 +84,10 @@ def menu():
     print("1. Listar carros disponiveis")
     print("2. Listar carros alugados")
     print("3. Alugar carro")
-    print("4. Devolver carro")
+    print("4. Devolver carro") #TODO
     print("5. Adicionar novo carro")
-    print("6. Sair")
+    print("6. Excluir carro")
+    print("7. Sair")
 
 if __name__ == "__main__":
     locadora = Locadora("locadora.db")
@@ -101,13 +110,17 @@ if __name__ == "__main__":
             carro_id = input("Digite o id do carro desejado: ")
             locadora.aluga_carro(cliente, carro_id)
         elif opcao == "4":
-            pass
+            pass    #TODO
         elif opcao == "5":
             os.system("cls")
             novo_carro_nome = input("Digite o nome do carro que deseja cadastrar: ")
             novo_carro = Carro(novo_carro_nome)
             locadora.adiciona_carro(novo_carro)
         elif opcao == "6":
+            os.system("cls")
+            carro_excluir = input("Digite o id do carro que deseja excluir: ")
+            locadora.deletar_carro(carro_excluir)
+        elif opcao == "7":
             print("\nSaindo...")
             break
         else:
