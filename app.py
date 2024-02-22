@@ -56,11 +56,11 @@ class Locadora:
             print(f"Erro ao tentar alugar o carro : {e}")
 
     def lista_carros_disponiveis(self):
-        self.c.execute("SELECT nome FROM carros WHERE disponivel = 1")
+        self.c.execute("SELECT id, nome FROM carros WHERE disponivel = 1")
         carros = self.c.fetchall()
         print("\nCarros disponiveis: ")
         for carro in carros:
-            print(carro[0])
+            print(f"ID: {carro[0]}, Carro: {carro[1]}")
     
     def lista_carros_alugados(self):
         self.c.execute("SELECT carros.nome, carros_alugados.cliente FROM carros_alugados JOIN carros ON carros.id = carros_alugados.carro_id")
