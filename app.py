@@ -34,6 +34,9 @@ class Locadora:
         self.conn.commit()
 
     def adiciona_carro(self, carro):
+        if not isinstance(carro, Carro):
+            print(f"Erro: Você deve fornecer um objeto do tipo Carro")
+            return
         try:
             self.c.execute("INSERT INTO carros (nome, disponivel) VALUES(?,?)", (carro.nome, carro.disponivel))
             self.conn.commit()
@@ -42,6 +45,9 @@ class Locadora:
             print(f"Erro ao adicionar {carro.nome}: {e}")
 
     def aluga_carro(self, cliente, id):
+        if not cliente:
+            print("Erro: Nome do cliente nao pode estar vazio")
+            return
         try:
             self.c.execute("SELECT nome FROM carros WHERE id = ? AND disponivel = 1", (id,))
             resultado = self.c.fetchone()
@@ -70,6 +76,9 @@ class Locadora:
             print(f"Carro: {alugado[0]}, Cliente: {alugado[1]}")
 
     def deletar_carro(self,carro_id):
+        if not carro_id:
+            print("Erro: Id do carro não pode estar vazio.")
+            return
         try:
             self.c.execute("DELETE FROM carros WHERE id = ?", (carro_id))
             self.conn.commit()
