@@ -106,6 +106,9 @@ class Locadora:
                 print(f"O carro {carro_nome[0]} não foi encontrado nos registros de aluguel")
         except sqlite3.Error as e:
             print(f"Erro ao devolver {carro_nome[0]} : {e}")
+        
+    def fechar_conn(self):
+        self.conn.close()
 
 def menu():
     
@@ -156,4 +159,6 @@ if __name__ == "__main__":
             break
         else:
             print("Insira uma opção válida")
+    
+    locadora.fechar_conn()
 
