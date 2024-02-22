@@ -69,11 +69,12 @@ class Locadora:
             print(f"ID: {carro[0]}, Carro: {carro[1]}")
     
     def lista_carros_alugados(self):
-        self.c.execute("SELECT carros.nome, carros_alugados.cliente FROM carros_alugados JOIN carros ON carros.id = carros_alugados.carro_id")
+        self.c.execute("SELECT carros.nome, carros_alugados.id, carros_alugados.cliente FROM carros_alugados JOIN carros ON carros.id = carros_alugados.carro_id")
         alugados = self.c.fetchall()
         print("\nCarros alugados:")
         for alugado in alugados:
-            print(f"Carro: {alugado[0]}, Cliente: {alugado[1]}")
+            # print(alugado)
+            print(f"Id do aluguel: {alugado[1]}, Carro: {alugado[2]}, Cliente: {alugado[2]}")
 
     def deletar_carro(self,carro_id):
         if not carro_id:
@@ -86,6 +87,25 @@ class Locadora:
         except sqlite3.Error as e:
             print(f"Erro ao excluir carro id: {carro_id} : {e}")
 
+    def devolver_carro(self, aluguel_id):
+        if not aluguel_id:
+            print("O id do carro não pode estar vazio.")
+            return
+        try:
+            self.c.execute("SELECT carro_id FROM carros_alugados WHERE id = ?", [aluguel_id])
+            resultado = self.c.fetchone()
+            if resultado:
+                carro_id = resultado[0]
+                self.c.execute("SELECT nome FROM carros WHERE id = ?", [carro_id])
+                carro_nome = self.c.fetchone()
+                self.c.execute("UPDATE carros SET disponivel = 1 WHERE id = ?", [carro_id])
+                self.c.execute("DELETE FROM carros_alugados WHERE carro_id = ?", [carro_id])
+                self.conn.commit()
+                print(f"O carro {carro_nome[0]} foi devolvido!")
+            else:
+                print(f"O carro {carro_nome[0]} não foi encontrado nos registros de aluguel")
+        except sqlite3.Error as e:
+            print(f"Erro ao devolver {carro_nome[0]} : {e}")
 
 def menu():
     
@@ -119,7 +139,9 @@ if __name__ == "__main__":
             carro_id = input("Digite o id do carro desejado: ")
             locadora.aluga_carro(cliente, carro_id)
         elif opcao == "4":
-            pass    #TODO
+            os.system("cls")
+            carro_devolver = input("Qual o id do aluguel que deseja devolver?: ")
+            locadora.devolver_carro(carro_devolver)
         elif opcao == "5":
             os.system("cls")
             novo_carro_nome = input("Digite o nome do carro que deseja cadastrar: ")
